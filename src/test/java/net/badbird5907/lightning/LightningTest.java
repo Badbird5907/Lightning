@@ -29,11 +29,11 @@ class LightningTest {
 
         Stopwatch event = new Stopwatch();
         event.start();
-        bus.post(new TestEvent("deez nuts"));
+        bus.post(new TestEvent("test"));
         event.startEnd();
-        bus.post(new TestEvent("deez nuts 1"));
+        bus.post(new TestEvent("test 1"));
         event.startEnd();
-        bus.post(new TestEvent("deez nuts 2"));
+        bus.post(new TestEvent("test 2"));
         event.end();
 
         System.out.println("Posting took " + event.getTotal() + "ms with an average of " + event.getAverage() + "ms per event");
@@ -43,7 +43,7 @@ class LightningTest {
         EventBus bus = new EventBus(new EventBus.EventBusSettings().setDebugMessages(true).setUseConcurrentHashMap(true));
         bus.register(new TestListener());
         bus.register(new SecondTestListener());
-        TestEvent event = new TestEvent("deez nuts");
+        TestEvent event = new TestEvent("test");
         bus.post(event);
         Assertions.assertTrue(event.isCancelled());
     }
