@@ -94,14 +94,16 @@ public class EventBus implements IEventBus {
                 }
             }
         }
-        EventInfo info = new EventInfo(method, type, handler.value(), handler, instance);
+        EventInfo info = new EventInfo(method, type, handler.priority(), handler, instance);
         debug("Adding event info " + info.toString());
         eventInfos.add(info);
+        sort(eventInfos);
         listeners.put(type, eventInfos);
     }
 
     @Override
     public void call(Event event) {
+        debug("Calling event " + event.getClass().getSimpleName());
         listeners.forEach((type, eventInfos) -> {
             if (event.getClass().isAssignableFrom(type)) {
                 eventInfos.forEach(eventInfo -> {
@@ -122,7 +124,17 @@ public class EventBus implements IEventBus {
             }
         });
     }
-    void debug(String message){
+    private void sort(List<EventInfo> eventInfos) {
+        //sort by priority, smallest to largest
+        eventInfos.sort((o1, o2) -> {
+            if (o1.getPriority() == o2.getPriority()) {
+                return 0;
+            }
+            return o1.getPriority() < o2.getPriority() ? -1 : 1;
+        });
+        Collections.reverse(eventInfos);
+    }
+    private void debug(String message){
         if (settings.isDebugMessages()){
             logger.debug(message);
         }

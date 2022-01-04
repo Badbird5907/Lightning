@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EventHandler {
-    byte value() default EventPriority.NORMAL;
+    int priority() default EventPriority.NORMAL;
 
     /**
      * if true, don't call the event handler if the event is cancelled

@@ -9,20 +9,24 @@ import java.util.Map;
 
 public interface IEventBus {
     void register(Class<?> event);
+
     void register(Object listener);
+
     void register(EventHandler handler, Method method, Object instance);
 
-    default void register(EventHandler handler,Method method) {
+    default void register(EventHandler handler, Method method) {
         register(handler, method, null);
     }
 
     Map<Class<? extends Event>, List<EventInfo>> getListeners();
 
     void call(Event event);
-    default void callEvent(Event event){
+
+    default void callEvent(Event event) {
         call(event);
     }
-    default void post(Event event){
+
+    default void post(Event event) {
         call(event);
     }
 }
