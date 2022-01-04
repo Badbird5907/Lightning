@@ -15,7 +15,9 @@ public class Lightning {
         if (testEvent.isCancelled()) { // check if the event was cancelled
             return; // if it was, return
         }
-        assert testEvent.getMessage().equals("Goodbye World!"); // assert that the message is "Goodbye World!" because the event listener with the lowest priority was called last and it overrides the previous event listener
+        assert testEvent.getMessage().equals("Goodbye World!");
+        // assert that the message is "Goodbye World!" because the event listener with the lowest priority was called 
+        // last and it overrides the previous event listener
     }
 }
 public class EventListener {
