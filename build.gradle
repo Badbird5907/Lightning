@@ -1,13 +1,14 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
-
 group 'net.badbird5907'
-version '1.0-SNAPSHOT'
+version '1.0-REL'
 description 'A lightning fast and lightweight event bus for Java'
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
