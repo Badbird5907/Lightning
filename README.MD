@@ -66,4 +66,5 @@ cd Lightning
 ### Dependencies
 - None, Lightning is a pure Java library that can be used in any Java project!
 
-### License
+### MIT License
+[See Here](https://github.com/Badbird-5907/Lightning/blob/master/LICENSE.txt)
