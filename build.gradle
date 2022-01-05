@@ -4,7 +4,7 @@ plugins {
     id 'signing'
 }
 group 'net.badbird5907'
-version '1.0.0-REL'
+version '1.1.0-REL'
 description 'A lightning fast and lightweight event bus for Java'
 
 repositories {

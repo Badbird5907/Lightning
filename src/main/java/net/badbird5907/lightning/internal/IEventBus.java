@@ -23,6 +23,18 @@ public interface IEventBus {
     void register(Object listener);
 
     /**
+     * Unregister a listener instance
+     * @param listener
+     */
+    void unregister(Object listener);
+
+    /**
+     * Unregister a listener class
+     * @param event
+     */
+    void unregister(Class<?> event);
+
+    /**
      * Register a EventHandler annotation, method and instance
      * @param handler The EventHandler annotation
      * @param method The method to register

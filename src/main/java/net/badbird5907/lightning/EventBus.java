@@ -63,6 +63,21 @@ public class EventBus implements IEventBus {
     }
 
     @Override
+    public void unregister(Object listener) {
+        if (listener == null)
+            throw new IllegalArgumentException("Listener cannot be null");
+        debug("Unregistering listener " + listener.getClass().getSimpleName());
+        Class<?> clazz = listener.getClass();
+        unregister(clazz);
+    }
+
+    @Override
+    public void unregister(Class<?> event) {
+        debug("Unregistering listener class " + event.getSimpleName());
+        listeners.forEach((clazz, eventInfos) -> eventInfos.removeIf(eventInfo -> eventInfo.getMethod().getDeclaringClass() == event));
+    }
+
+    @Override
     public void register(EventHandler handler, Method method, Object instance) {
         debug("Registering method " + method.getName() + " in class " + method.getDeclaringClass().getSimpleName() + " static: " + (instance == null));
         debug("Parameter types: " + Arrays.asList(method.getParameterTypes()).toString());
@@ -75,9 +90,10 @@ public class EventBus implements IEventBus {
         }
         Class<? extends Event> type = (Class<? extends Event>) method.getParameterTypes()[0];
         List<EventInfo> eventInfos = listeners.get(method.getParameterTypes()[0]);
-        if (eventInfos == null) {
-            debug("eventInfos is null");
-            eventInfos = new ArrayList<>();
+        if (eventInfos == null || eventInfos.isEmpty()) {
+            debug("eventInfos is null or empty");
+            if (eventInfos == null)
+                eventInfos = new ArrayList<>();
         }else {
             for (EventInfo eventInfo : eventInfos) { //TODO: Still slightly buggy, but shouldn't be a problem unless you're intentionally registering the same class as a class and instance, and the class has both static and instance event handlers
                 //check if method is already registered
