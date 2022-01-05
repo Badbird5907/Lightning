@@ -1,9 +1,10 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'signing'
 }
 group 'net.badbird5907'
-version '1.0-REL'
+version '1.0.0-REL'
 description 'A lightning fast and lightweight event bus for Java'
 
 repositories {
@@ -24,4 +25,49 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+publishing {
+    repositories {
+        maven {
+            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2'
+            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = nexusUsername
+                password = nexusPassword
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = 'Lightning'
+                description = 'A lightning fast and lightweight event bus'
+                url = 'https://github.com/Badbird-5907/Lightning'
+                from components.java
+                scm {
+                    url = 'https://github.com/Badbird-5907/Lightning.git'
+                }
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT/'
+                        distribution = 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'Badbird-5907'
+                        name = 'Badbird5907'
+                        email = 'badbird@badbird5907.net'
+                    }
+                }
+            }
+        }
+    }
+}
+signing {
+    sign publishing.publications.mavenJava
 }
