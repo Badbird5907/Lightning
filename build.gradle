@@ -26,6 +26,19 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+task sourcesJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+task javadocJar(type: Jar) {
+    classifier 'javadoc'
+    from sourceSets.main.allJava
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
 publishing {
     repositories {
         maven {
@@ -45,6 +58,8 @@ publishing {
                 description = 'A lightning fast and lightweight event bus'
                 url = 'https://github.com/Badbird-5907/Lightning'
                 from components.java
+                artifact sourcesJar
+                artifact javadocJar
                 scm {
                     url = 'https://github.com/Badbird-5907/Lightning.git'
                 }
