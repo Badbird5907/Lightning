@@ -47,7 +47,25 @@ public class TestEvent implements Event, Cancellable {
 ```
 
 #### Dependency
-soon™
+If you use apache maven:
+```xml
+<dependency>
+  <groupId>net.badbird5907</groupId>
+  <artifactId>Lightning</artifactId>
+  <version>1.0.0-REL</version>
+</dependency>
+```
+Or alternatively, if you use gradle:
+```groovy
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation 'net.badbird5907:Lightning:1.0.0-REL'
+}
+```
+
+[Maven Search](https://search.maven.org/artifact/net.badbird5907/Lightning/1.0.0-REL/jar)
 
 ### Building
 Lightning uses Gradle to build and test.
