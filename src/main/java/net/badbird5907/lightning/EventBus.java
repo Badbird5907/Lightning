@@ -46,7 +46,7 @@ public class EventBus implements IEventBus {
                     debug("Method is annotated with EventHandler");
                     register(method.getAnnotation(EventHandler.class), method);
                 }
-            }else debug("Method is not static, ignoring");
+            } else debug("Method is not static, ignoring");
         }
     }
 
@@ -94,7 +94,7 @@ public class EventBus implements IEventBus {
             debug("eventInfos is null or empty");
             if (eventInfos == null)
                 eventInfos = new ArrayList<>();
-        }else {
+        } else {
             for (EventInfo eventInfo : eventInfos) { //TODO: Still slightly buggy, but shouldn't be a problem unless you're intentionally registering the same class as a class and instance, and the class has both static and instance event handlers
                 //check if method is already registered
                 if (eventInfo.getMethod().equals(method)) {
@@ -120,26 +120,32 @@ public class EventBus implements IEventBus {
     @Override
     public void call(Event event) {
         debug("Calling event " + event.getClass().getSimpleName());
+        /*
         listeners.forEach((type, eventInfos) -> {
             if (event.getClass().isAssignableFrom(type)) {
                 eventInfos.forEach(eventInfo -> {
-                    try {
-                        boolean cancellable = event instanceof Cancellable;
-                        if (cancellable && ((Cancellable) event).isCancelled()) {
-                            if (eventInfo.getListenerAnnotation().ignoreCancelled()) {
-                                return;
-                            }
-                        }
-                        eventInfo.getMethod().setAccessible(true);
-                        eventInfo.getMethod().invoke(eventInfo.getInstance(), event);
-                    } catch (InvocationTargetException | IllegalAccessException e) {
-                        logger.error("Error passing event to method " + eventInfo.getMethod().getName() + " in class " + eventInfo.getInstance().getClass().getName());
-                        e.printStackTrace();
-                    }
+
                 });
             }
         });
+         */
+        for (EventInfo eventInfo : listeners.get(event.getClass())) {
+            try {
+                boolean cancellable = event instanceof Cancellable;
+                if (cancellable && ((Cancellable) event).isCancelled()) {
+                    if (eventInfo.getListenerAnnotation().ignoreCancelled()) {
+                        return;
+                    }
+                }
+                eventInfo.getMethod().setAccessible(true);
+                eventInfo.getMethod().invoke(eventInfo.getInstance(), event);
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                logger.error("Error passing event to method " + eventInfo.getMethod().getName() + " in class " + eventInfo.getInstance().getClass().getName());
+                e.printStackTrace();
+            }
+        }
     }
+
     private void sort(List<EventInfo> eventInfos) {
         //sort by priority, smallest to largest
         eventInfos.sort((o1, o2) -> {
@@ -150,34 +156,42 @@ public class EventBus implements IEventBus {
         });
         Collections.reverse(eventInfos);
     }
-    private void debug(String message){
-        if (settings.isDebugMessages()){
+
+    private void debug(String message) {
+        if (settings.isDebugMessages()) {
             logger.debug(message);
         }
     }
 
     @Getter
     public static class EventBusSettings {
-        private boolean useConcurrentHashMap = true,debugMessages = false;
+        private boolean useConcurrentHashMap = true, debugMessages = false;
         private Logger logger = new DefaultLogger();
+
         public EventBusSettings setUseConcurrentHashMap(boolean useConcurrentHashMap) {
             this.useConcurrentHashMap = useConcurrentHashMap;
             return this;
         }
+
         public EventBusSettings setLogger(Logger logger) {
             this.logger = logger;
             return this;
         }
+
         public EventBusSettings setDebugMessages(boolean debugMessages) {
             this.debugMessages = debugMessages;
             return this;
         }
     }
+
     public interface Logger {
         void log(String message);
+
         void debug(String message);
+
         void error(String message);
     }
+
     public static class DefaultLogger implements Logger {
         @Override
         public void debug(String message) {
