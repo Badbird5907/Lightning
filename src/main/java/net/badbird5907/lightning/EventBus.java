@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EventBus implements IEventBus {
     @Getter
@@ -93,7 +94,7 @@ public class EventBus implements IEventBus {
         if (eventInfos == null || eventInfos.isEmpty()) {
             debug("eventInfos is null or empty");
             if (eventInfos == null)
-                eventInfos = new ArrayList<>();
+                eventInfos = settings.useConcurrentArrayList ? new CopyOnWriteArrayList<>() : new ArrayList<>();
         } else {
             for (EventInfo eventInfo : eventInfos) { //TODO: Still slightly buggy, but shouldn't be a problem unless you're intentionally registering the same class as a class and instance, and the class has both static and instance event handlers
                 //check if method is already registered
@@ -129,6 +130,11 @@ public class EventBus implements IEventBus {
             }
         });
          */
+        List<EventInfo> eventInfos = listeners.get(event.getClass());
+        if (eventInfos == null || eventInfos.isEmpty()) {
+            debug("No listeners for event " + event.getClass().getSimpleName());
+            return;
+        }
         for (EventInfo eventInfo : listeners.get(event.getClass())) {
             try {
                 boolean cancellable = event instanceof Cancellable;
@@ -165,11 +171,15 @@ public class EventBus implements IEventBus {
 
     @Getter
     public static class EventBusSettings {
-        private boolean useConcurrentHashMap = true, debugMessages = false;
+        private boolean useConcurrentHashMap = true,useConcurrentArrayList = true, debugMessages = false;
         private Logger logger = new DefaultLogger();
 
         public EventBusSettings setUseConcurrentHashMap(boolean useConcurrentHashMap) {
             this.useConcurrentHashMap = useConcurrentHashMap;
+            return this;
+        }
+        public EventBusSettings setUseConcurrentArrayList(boolean use) {
+            this.useConcurrentArrayList = use;
             return this;
         }
 

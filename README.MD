@@ -52,7 +52,7 @@ If you use apache maven:
 <dependency>
   <groupId>net.badbird5907</groupId>
   <artifactId>Lightning</artifactId>
-  <version>1.1.0-REL</version>
+  <version>1.1.3-REL</version>
 </dependency>
 ```
 Or alternatively, if you use gradle:
@@ -61,11 +61,11 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation 'net.badbird5907:Lightning:1.1.0-REL'
+    implementation 'net.badbird5907:Lightning:1.1.3-REL'
 }
 ```
 
-[Maven Search](https://search.maven.org/artifact/net.badbird5907/Lightning/1.1.0-REL/jar)
+[Maven Search](https://search.maven.org/artifact/net.badbird5907/Lightning/1.1.3-REL/jar)
 
 ### Building
 Lightning uses Gradle to build and test.
